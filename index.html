@@ -1,274 +1,336 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arcade Portátil 🕹️</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #ff0055;
-      --text: #f8fafc;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', sans-serif;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-    h1 { margin-bottom: 1.5rem; font-size: 2rem; color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
-    .menu { display: flex; gap: 10px; margin-bottom: 1.5rem; width: 100%; max-width: 400px; }
-    .tab-btn {
-      flex: 1; padding: 0.8rem; background: var(--card); border: 1px solid #334155;
-      color: var(--text); font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s;
-    }
-    .tab-btn.active { background: var(--accent); border-color: var(--accent); }
-    .game-container {
-      background: var(--card); border-radius: 16px; padding: 1.5rem;
-      width: 100%; max-width: 400px; display: none; flex-direction: column; align-items: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-    .game-container.active { display: flex; }
-    
-    /* Estilos de los juegos */
-    canvas { background: #000; border-radius: 8px; max-width: 100%; display: block; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 240px; margin: 1rem 0; }
-    .cell {
-      width: 75px; height: 75px; background: #0f172a; border: 2px solid #334155;
-      border-radius: 8px; font-size: 2rem; font-weight: bold; color: #fff;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
-    }
-    .status { margin-bottom: 1rem; font-size: 1.1rem; font-weight: bold; }
-    .btn {
-      margin-top: 0.5rem; padding: 0.6rem 1.5rem; background: #00ffcc; color: #000;
-      border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zephyr S-Famous | Potencia tu Instagram</title>
+    <style>
+        :root {
+            --bg-color: #0d0e15;
+            --card-bg: #161824;
+            --primary: #8a2be2;
+            --secondary: #00f2fe;
+            --text-main: #ffffff;
+            --text-muted: #a0a5c1;
+            --accent: #ff007f;
+        }
 
-    /* Controles Táctiles para el celular */
-    .controls {
-      display: grid;
-      grid-template-areas: 
-        ". up ."
-        "left . right"
-        ". down .";
-      gap: 10px;
-      margin-top: 1.5rem;
-      width: 180px;
-    }
-    .dpad-btn {
-      background: #334155;
-      color: white;
-      border: none;
-      font-size: 1.5rem;
-      font-weight: bold;
-      padding: 0.8rem;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px #1e293b;
-    }
-    .dpad-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px #1e293b;
-    }
-    #btn-up { grid-area: up; }
-    #btn-left { grid-area: left; }
-    #btn-right { grid-area: right; }
-    #btn-down { grid-area: down; }
-  </style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Fondo con destellos difuminados */
+        .glow-bg {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(138,43,226,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-bg-2 {
+            position: absolute;
+            bottom: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid var(--primary);
+            color: #d8b4fe;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        /* Características / Beneficios */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto 5rem auto;
+            padding: 0 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(138, 43, 226, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Sección de Pago Especial */
+        .payment-notice {
+            max-width: 900px;
+            margin: 0 auto 5rem auto;
+            padding: 0 2rem;
+        }
+
+        .notice-box {
+            background: linear-gradient(135deg, rgba(22, 24, 36, 0.9) 0%, rgba(29, 14, 46, 0.9) 100%);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 0, 127, 0.05);
+        }
+
+        .notice-box h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ff4da6;
+        }
+
+        .notice-box .amount-badge {
+            background: rgba(0, 242, 254, 0.15);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 1rem 0 1.5rem 0;
+        }
+
+        /* Botones de Contacto */
+        .cta-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            min-width: 220px;
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: #000;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.5);
+        }
+
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(220, 39, 67, 0.3);
+        }
+
+        .btn-instagram:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(220, 39, 67, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #090a0f;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .notice-box { padding: 2rem 1.5rem; }
+            .btn { width: 100%; }
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Arcade Portátil 🕹️</h1>
+    <div class="glow-bg"></div>
+    <div class="glow-bg-2"></div>
 
-  <div class="menu">
-    <button class="tab-btn active" onclick="openGame('snake')">Snake</button>
-    <button class="tab-btn" onclick="openGame('tictactoe')">Gato</button>
-    <button class="tab-btn" onclick="openGame('pong')">Pong</button>
-  </div>
+    <header>
+        <div class="logo">Zephyr S-Famous</div>
+    </header>
 
-  <div id="snake" class="game-container active">
-    <div class="status">Puntos: <span id="score">0</span></div>
-    <canvas id="snakeCanvas" width="300" height="300"></canvas>
-    
-    <div class="controls">
-      <button class="dpad-btn" id="btn-up" onclick="changeDirection('UP')">▲</button>
-      <button class="dpad-btn" id="btn-left" onclick="changeDirection('LEFT')">◀</button>
-      <button class="dpad-btn" id="btn-right" onclick="changeDirection('RIGHT')">▶</button>
-      <button class="dpad-btn" id="btn-down" onclick="changeDirection('DOWN')">▼</button>
-    </div>
-    <button class="btn" style="margin-top:1.5rem;" onclick="initSnake()">Reiniciar</button>
-  </div>
+    <section class="hero">
+        <div class="badge">Soporte Activo: Sábados y Domingos</div>
+        <h1>Lleva tu Instagram al <br><span>Siguiente Nivel</span></h1>
+        <p>Aumenta tu presencia digital de forma rápida, segura y con los precios más accesibles del mercado. Sin rodeos, sin complicaciones.</p>
+    </section>
 
-  <div id="tictactoe" class="game-container">
-    <div id="gatoStatus" class="status">Turno de X</div>
-    <div class="grid">
-      <div class="cell" onclick="makeMove(this, 0)"></div>
-      <div class="cell" onclick="makeMove(this, 1)"></div>
-      <div class="cell" onclick="makeMove(this, 2)"></div>
-      <div class="cell" onclick="makeMove(this, 3)"></div>
-      <div class="cell" onclick="makeMove(this, 4)"></div>
-      <div class="cell" onclick="makeMove(this, 5)"></div>
-      <div class="cell" onclick="makeMove(this, 6)"></div>
-      <div class="cell" onclick="makeMove(this, 7)"></div>
-      <div class="cell" onclick="makeMove(this, 8)"></div>
-    </div>
-    <button class="btn" onclick="resetGato()">Reiniciar</button>
-  </div>
+    <section class="features">
+        <div class="feature-card">
+            <h3>Servicio Express</h3>
+            <p>Sabemos que no te gusta esperar. Una vez coordinemos tu orden, notarás el movimiento en tu perfil en tiempo récord.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Precios Accesibles</h3>
+            <p>Paquetes diseñados para creadores de contenido, marcas y perfiles personales que buscan crecer sin gastar una fortuna.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Soporte el Finde</h3>
+            <p>¿Tienes dudas un sábado en la tarde? Despreocúpate. Atendemos de forma personalizada los fines de semana para asegurar tu tranquilidad.</p>
+        </div>
+    </section>
 
-  <div id="pong" class="game-container">
-    <canvas id="pongCanvas" width="300" height="350"></canvas>
-    <p style="margin-top:1rem; font-size:0.85rem; color:#94a3b8;">Toca los lados de la pantalla para mover la barra</p>
-    <button class="btn" onclick="initPong()">Reiniciar</button>
-  </div>
+    <section class="payment-notice">
+        <div class="notice-box">
+            <h2>Método de Pago Alternativo</h2>
+            <p>Para mayor comodidad, agilidad y mantener nuestros costos bajos, <strong>no aceptamos métodos convencionales</strong> (como PayPal, tarjetas de crédito o débito directas).</p>
+            
+            <div class="amount-badge">Monto mínimo de orden: $100</div>
+            
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Operamos exclusivamente mediante <strong>tarjetas de regalo (Gift Cards)</strong>. Ideal para facilitar transacciones rápidas y accesibles para todos desde cualquier lugar.
+            </p>
+        </div>
+    </section>
 
-  <script>
-    // Variables globales de los timers para poder matarlos al cambiar de juego
-    let snakeInterval = null;
-    let pongInterval = null;
+    <section class="hero" style="margin-top: 0; margin-bottom: 6rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">¿Listo para empezar?</h2>
+        <p style="font-size: 1rem; max-width: 550px;">Escríbeme directamente por cualquiera de las vías oficiales para consultar el catálogo de precios y levantar tu pedido.</p>
+        
+        <div class="cta-container">
+            <a href="https://wa.me/529844681306?text=Hola%20Zephyr,%20me%20interesa%20adquirir%20un%20paquete%20de%20seguidores" target="_blank" class="btn btn-whatsapp">
+                Contactar por WhatsApp
+            </a>
+            <a href="https://www.instagram.com/zephyr_gl0bal?igsh=MThvM2Y2dXoycXl5cA==" target="_blank" class="btn btn-instagram">
+                Ver Instagram Oficial
+            </a>
+        </div>
+    </section>
 
-    function stopAllGames() {
-      clearInterval(snakeInterval);
-      clearInterval(pongInterval);
-      snakeInterval = null;
-      pongInterval = null;
-    }
+    <footer>
+        <p>&copy; 2026 Zephyr S-Famous. Propiedad de Zephyr. Todos los derechos reservados.</p>
+    </footer>
 
-    function openGame(gameId) {
-      stopAllGames(); // Detiene absolutamente todo antes de cambiar
-      document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(gameId).classList.add('active');
-      event.target.classList.add('active');
-      
-      if(gameId === 'snake') initSnake();
-      if(gameId === 'pong') initPong();
-    }
-
-    // --- LÓGICA JUEGO: SNAKE ---
-    const sCanvas = document.getElementById('snakeCanvas');
-    const ctxS = sCanvas.getContext('2d');
-    let snake, food, dx, dy, score;
-
-    function initSnake() {
-      clearInterval(snakeInterval);
-      snake = [{x: 150, y: 150}, {x: 140, y: 150}, {x: 130, y: 150}];
-      dx = 10; dy = 0; score = 0;
-      document.getElementById('score').innerText = score;
-      genFood();
-      snakeInterval = setInterval(mainSnake, 120); // Velocidad equilibrada
-    }
-
-    function mainSnake() {
-      if (hasGameEnded()) { 
-        clearInterval(snakeInterval); 
-        alert("¡Perdiste! Puntuación: " + score); 
-        initSnake(); 
-        return; 
-      }
-      ctxS.fillStyle = '#000';
-      ctxS.fillRect(0, 0, sCanvas.width, sCanvas.height);
-      drawFood();
-      moveSnake();
-      drawSnake();
-    }
-
-    function drawSnake() { ctxS.fillStyle = '#00ffcc'; snake.forEach(p => ctxS.fillRect(p.x, p.y, 9, 9)); }
-    
-    function moveSnake() {
-      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-      snake.unshift(head);
-      if (snake[0].x === food.x && snake[0].y === food.y) { 
-        score += 10; 
-        document.getElementById('score').innerText = score; 
-        genFood(); 
-      } else { 
-        snake.pop(); 
-      }
-    }
-
-    function genFood() {
-      food = {
-        x: Math.floor(Math.random() * (sCanvas.width / 10)) * 10,
-        y: Math.floor(Math.random() * (sCanvas.height / 10)) * 10
-      };
-    }
-    function drawFood() { ctxS.fillStyle = '#ff0055'; ctxS.fillRect(food.x, food.y, 9, 9); }
-
-    function hasGameEnded() {
-      for (let i = 4; i < snake.length; i++) { if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true; }
-      return snake[0].x < 0 || snake[0].x >= sCanvas.width || snake[0].y < 0 || snake[0].y >= sCanvas.height;
-    }
-
-    // Sistema de control por botones corregido
-    function changeDirection(direction) {
-      if (direction === 'LEFT' && dx === 0) { dx = -10; dy = 0; }
-      if (direction === 'UP' && dy === 0) { dx = 0; dy = -10; }
-      if (direction === 'RIGHT' && dx === 0) { dx = 10; dy = 0; }
-      if (direction === 'DOWN' && dy === 0) { dx = 0; dy = 10; }
-    }
-
-    // --- LÓGICA JUEGO: GATO ---
-    let board = ["", "", "", "", "", "", "", "", ""];
-    let currentPlayer = "X";
-    function makeMove(cell, index) {
-      if (board[index] === "" && !checkWin()) {
-        board[index] = currentPlayer;
-        cell.innerText = currentPlayer;
-        if (checkWin()) { document.getElementById('gatoStatus').innerText = `¡Ganador: ${currentPlayer}! 🎉`; }
-        else if (!board.includes("")) { document.getElementById('gatoStatus').innerText = "¡Empate! 🤝"; }
-        else { currentPlayer = currentPlayer === "X" ? "O" : "X"; document.getElementById('gatoStatus').innerText = `Turno de ${currentPlayer}`; }
-      }
-    }
-    function checkWin() {
-      const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-      return wins.some(r => board[r[0]] && board[r[0]] === board[r[1]] && board[r[0]] === board[r[2]]);
-    }
-    function resetGato() {
-      board = ["", "", "", "", "", "", "", "", ""]; currentPlayer = "X";
-      document.getElementById('gatoStatus').innerText = "Turno de X";
-      document.querySelectorAll('.cell').forEach(c => c.innerText = "");
-    }
-
-    // --- LÓGICA JUEGO: PONG ---
-    const pCanvas = document.getElementById('pongCanvas');
-    const ctxP = pCanvas.getContext('2d');
-    let paddleX, ballX, ballY, ballDX, ballDY;
-
-    function initPong() {
-      clearInterval(pongInterval);
-      paddleX = 110; ballX = 150; ballY = 50; ballDX = 3; ballDY = 3;
-      pongInterval = setInterval(mainPong, 16);
-    }
-    function mainPong() {
-      ballX += ballDX; ballY += ballDY;
-      if (ballX <= 0 || ballX >= pCanvas.width) ballDX *= -1;
-      if (ballY <= 0) ballDY *= -1;
-      if (ballY >= pCanvas.height - 20 && ballX >= paddleX && ballX <= paddleX + 80) { ballDY *= -1; ballY = pCanvas.height - 21; }
-      else if (ballY > pCanvas.height) { clearInterval(pongInterval); alert("Fin del juego!"); initPong(); return; }
-      
-      ctxP.fillStyle = '#000';
-      ctxP.fillRect(0, 0, pCanvas.width, pCanvas.height);
-      ctxP.fillStyle = '#00ffcc'; ctxP.fillRect(paddleX, pCanvas.height - 15, 80, 10);
-      ctxP.fillStyle = '#ff0055'; ctxP.beginPath(); ctxP.arc(ballX, ballY, 7, 0, Math.PI*2); ctxP.fill();
-    }
-    pCanvas.addEventListener('click', (e) => {
-      const rect = pCanvas.getBoundingClientRect();
-      if ((e.clientX - rect.left) < pCanvas.width / 2) { paddleX = Math.max(0, paddleX - 35); }
-      else { paddleX = Math.min(pCanvas.width - 80, paddleX + 35); }
-    });
-
-    // Arranca el juego inicial
-    initSnake();
-  </script>
 </body>
-  </html>
-
+</html>
